@@ -1,6 +1,7 @@
 ﻿/*
  * Basic camera control using mouse movement.
  * Customisable sensitivity, vertical clamping.
+ * Should be added to player first person camera.
 */
 
 // Imports
@@ -28,7 +29,7 @@ public class PlayerLook : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    // Update is called once per frame
+    // Check for mouse rotation input every frame
     void Update ()
     {
         CameraRotation();
@@ -41,6 +42,8 @@ public class PlayerLook : MonoBehaviour
 
         xAxisClamp += mouseY;
 
+        // If player is looking either straight up or straight down, clamp vertical camera
+        // rotation
         if (xAxisClamp > 90.0f)
         {
             xAxisClamp = 90.0f;
@@ -58,6 +61,7 @@ public class PlayerLook : MonoBehaviour
         playerBody.Rotate(Vector3.up * mouseX);
     }
 
+    // Does what it says on the tin
     private void ClampXAxisRotationToValue(float value)
     {
         Vector3 eulerRotation = transform.eulerAngles;
