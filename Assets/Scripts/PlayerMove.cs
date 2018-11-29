@@ -23,6 +23,7 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float crouchLerpSpeed;
     [SerializeField] private KeyCode crouchKey;
 
+    // Constant for default walk speed
     private float movementSpeed;
 
     // Values for slope control
