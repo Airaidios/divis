@@ -29,10 +29,17 @@
 
 # Unity Misc
 *.cache
+*.log
 
 # Exclusions
 /.vs/
+/Library/
 /obj/
 /Temp/
 
+<<<<<<< HEAD
 Library/
+=======
+# Exceptions
+!/Assets/
+>>>>>>> master
