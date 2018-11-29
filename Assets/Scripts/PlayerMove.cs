@@ -1,6 +1,6 @@
 ﻿/*
  * Basic player movement system.
- * Horizontal movement, jumping, sprinting, crouching.
+ * Horizontal movement, jumping, sprinting, crouching, double jumping.
  * Should be added to player controller object.
 */
 
