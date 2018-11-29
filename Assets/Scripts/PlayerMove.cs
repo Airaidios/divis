@@ -39,7 +39,11 @@ public class PlayerMove : MonoBehaviour
 
     // Bools for checking if player is in air or crouching
     private bool inAir;
-    private bool crouched;
+    protected bool crouched;
+
+    // Values related to double jumping
+    private const int MAX_JUMP = 2;
+    private int currentJump;
 
     // Get player object controller component
     private void Awake()
@@ -62,8 +66,10 @@ public class PlayerMove : MonoBehaviour
         Vector3 forwardMovement = transform.forward * vertInput;
         Vector3 rightMovement = transform.right * horizInput;
 
+        // Prevent diagonal walking being faster than regular walking
         charController.SimpleMove(Vector3.ClampMagnitude(forwardMovement + rightMovement, 1.0f) * movementSpeed);
 
+        // If player is on a slope, apply a downward force
         if ((vertInput != 0 || horizInput != 0) && OnSlope())
             charController.Move(Vector3.down * charController.height / 2 * slopeForce * Time.deltaTime);
 
@@ -79,13 +85,17 @@ public class PlayerMove : MonoBehaviour
         else if (Input.GetKey(crouchKey))
         {
             movementSpeed = Mathf.Lerp(movementSpeed, crouchSpeed, Time.deltaTime * crouchLerpSpeed);
-            crouched = false;
+            charController.height = 1.0f;
+            crouched = true;
         }
         else
+        {
             movementSpeed = Mathf.Lerp(movementSpeed, walkSpeed, Time.deltaTime * sprintLerpSpeed);
+            charController.height = 2.0f;
+        }
     }
 
-    // Prevent jittery or bouncy motion while moving down slopes
+    // Detect if player is on a sloped surface
     private bool OnSlope()
     {
         if (inAir)
@@ -105,7 +115,7 @@ public class PlayerMove : MonoBehaviour
     // Jump if player inputs jump key
     private void JumpInput()
     {
-        if (Input.GetKeyDown(jumpKey) && !inAir)
+        if (Input.GetKeyDown(jumpKey) && (!inAir || MAX_JUMP > currentJump))
         {
             inAir = true;
             StartCoroutine(JumpEvent());
@@ -118,15 +128,22 @@ public class PlayerMove : MonoBehaviour
         // Change slope limit to allow mounting convex right angles while in air
         charController.slopeLimit = 90.0f;
         float timeInAir = 0.0f;
+        currentJump++;
         do
         {
             float jumpForce = jumpFallOff.Evaluate(timeInAir);
-            charController.Move(Vector3.up * jumpForce * jumpMultiplier * Time.deltaTime);
+            if (currentJump < 1)
+                charController.Move(Vector3.up * jumpForce * jumpMultiplier * Time.deltaTime);
+            else
+            {
+                charController.Move(Vector3.up * jumpForce * jumpMultiplier * Time.deltaTime);
+            }
             timeInAir += Time.deltaTime;
             yield return null;
         } while (!charController.isGrounded && charController.collisionFlags != CollisionFlags.Above);
 
         charController.slopeLimit = 45.0f;
         inAir = false;
+        currentJump = 0;
     }
 }
