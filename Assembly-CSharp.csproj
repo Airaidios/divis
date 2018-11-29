@@ -55,6 +55,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\PlayerLook.cs" />
      <Compile Include="Assets\Scripts\PlayerMove.cs" />
+     <None Include="Assets\Raw Mocap Data\Animations\_CompleteAnimationList.txt" />
  <Reference Include="UnityEditor.StandardEvents">
  <HintPath>C:/Users/Oneill/Desktop/Unity Projects/divis/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
  </Reference>
